@@ -84,14 +84,7 @@ class Container extends Component {
 
         <div className="row">
           <table className="table">
-            <tr>
-              <th>Photo</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-            </tr>
-
+        
             {[... this.state.result].map((item) => 
             <Table 
             picture={item.picture}
