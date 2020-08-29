@@ -5,7 +5,7 @@ import api from "../utils/api";
 
 class Container extends Component {
   state = {
-    result: {},
+    result: [],
     search: "",
     filterBy: "fName",
     currentSort: "default",
@@ -13,17 +13,18 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    api.getEmployee()
+    api
+      .getEmployee()
       .then((response) => {
-        console.log(Response);
+        console.log(response);
         this.setState({
-          result: response.data.results.map((event, input) => ({
-            fName: event.name.first,
-            lName: event.name.last,
-            picture: event.picture.large,
-            email: event.email,
-            phone: event.phone,
-            key: input,
+          result: response.data.results.map((emp, idx) => ({
+            fName: emp.name.first,
+            lName: emp.name.last,
+            picture: emp.picture.large,
+            email: emp.email,
+            phone: emp.phone,
+            key: idx,
           })),
         });
       })
@@ -31,7 +32,7 @@ class Container extends Component {
   }
 
   searchEmp = (search) => {
-    console.log(this.state.result);
+    console.log(search);
     var filterEmp = this.state.result.filter(
       (person) => person.fName === search
     );
@@ -41,6 +42,7 @@ class Container extends Component {
   };
 
   handleInputChange = (event) => {
+    event.preventDefault();
     const value = event.target.value;
     const name = event.target.name;
     this.setState({
@@ -50,7 +52,16 @@ class Container extends Component {
 
   handleFormSubmit = (event) => {
     event.preventDefault();
-    this.searchEmp(this.state.search);
+    const value = event.target.value;
+    const name = event.target.name;
+    console.log("name", name);
+    console.log("value", value);
+    this.searchEmp(value);
+    this.setState({
+      [name]: value
+    });
+    this.filterEmployees(value);
+    this.filterEmployees(this.state.search);
   };
 
   render() {
@@ -58,6 +69,7 @@ class Container extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-12"></div>
+          <h2>Employee Directory</h2>
         </div>
 
         <div className="row">
@@ -80,22 +92,21 @@ class Container extends Component {
               <th>Phone</th>
             </tr>
 
-            {[this.state.result].map((item) => (
-              <Table
-                picture={item.picture}
-                fName={item.fName}
-                lName={item.lName}
-                email={item.email}
-                phone={item.phone}
-                key={item.key}
-              />
-
-            ))}
+            {[... this.state.result].map((item) => 
+            <Table 
+            picture={item.picture}
+            fName={item.fName}
+            lName={item.lName}
+            email={item.email}
+            phone={item.phone}
+            key={item.key}
+            />
+            )}
           </table>
         </div>
       </div>
     );
-  };
-};
+  }
+}
 
 export default Container;

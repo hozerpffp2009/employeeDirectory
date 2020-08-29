@@ -4,6 +4,6 @@ import axios from "axios";
 
  export default {
      getEmployee: function() {
-         return axios.get(BASEURL);
+         return axios.get(BASEURL);   
      }
- };
+ }; 
