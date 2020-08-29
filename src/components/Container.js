@@ -43,26 +43,29 @@ class Container extends Component {
 
   handleInputChange = (event) => {
     event.preventDefault();
+    console.log(event.target.value);
     const value = event.target.value;
     const name = event.target.name;
+    this.searchEmp(value);
     this.setState({
       [name]: value,
     });
   };
 
-  handleFormSubmit = (event) => {
-    event.preventDefault();
-    const value = event.target.value;
-    const name = event.target.name;
-    console.log("name", name);
-    console.log("value", value);
-    this.searchEmp(value);
-    this.setState({
-      [name]: value
-    });
-    this.filterEmployees(value);
-    this.filterEmployees(this.state.search);
-  };
+  // handleFormSubmit = (event) => {
+  //   event.preventDefault();
+  //   const value = event.target.value;
+  //   const name = event.target.name;
+  //   console.log(event.target);
+  //   console.log("name", name);
+  //   console.log("value", value);
+  //   this.searchEmp(value);
+  //   this.setState({
+  //     [name]: value
+  //   });
+  //   this.searchEmp(value);
+  //   this.searchEmp(this.state.search);
+  // };
 
   render() {
     return (
@@ -77,15 +80,14 @@ class Container extends Component {
             <Search
               value={this.state.search}
               handleInputChange={this.handleInputChange}
-              handleFormSubmit={this.handleFormSubmit}
+              // handleFormSubmit={this.handleFormSubmit}
             />
           </div>
         </div>
 
         <div className="row">
-          <table className="table">
-        
-            {[... this.state.result].map((item) => 
+             
+            {[...this.state.result].map((item) => 
             <Table 
             picture={item.picture}
             fName={item.fName}
@@ -95,7 +97,7 @@ class Container extends Component {
             key={item.key}
             />
             )}
-          </table>
+       
         </div>
       </div>
     );
