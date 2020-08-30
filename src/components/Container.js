@@ -2,7 +2,9 @@ import React, {Component} from "react";
 import Search from "./Search";
 import Table from "./Table";
 import api from "../utils/api";
+import "./style.css";
 
+// Inheriting container from component
 class Container extends Component {
   state = {
     result: [],
@@ -11,7 +13,7 @@ class Container extends Component {
     currentSort: "default",
     sortField: "",
   };
-
+// Hook call that gets called after being mounted to the dom.
   componentDidMount() {
     api
       .getEmployee()
@@ -31,16 +33,41 @@ class Container extends Component {
       .catch((err) => console.log("error", err));
   }
 
+  // function to filter through employees.
   searchEmp = (search) => {
+    const [searchTerm, setSearchTerm] = React.useState("");
+    const [ searchResults, setSearchResults] = React.useState([]);
+    const handleChange = event => {
+      setSearchTerm(event.target.value);
+    };
+    React.useEffect(() => {
+      const results = this.state.result.filter(person =>
+        person.toLowerCase().includes(searchTerm)
+        );
+        setSearchResults(results);
+        
+    }, [searchTerm]);
     console.log(search);
-    var filterEmp = this.state.result.filter(
-      (person) => person.fName === search
-    );
-    this.setState({
-      result: filterEmp,
-    });
+
+    return (
+      <div className="App">
+        <input type="text"
+        placeholder="Search"
+        value={searchTerm}
+        onChange={handleChange}>
+        </input>
+      </div>
+    )
+    // var filterEmp = this.state.result.filter(
+    //   (person) => person.toLowerCase().includes(search.toLowerCase())
+    // );
+    // setSearchResults(result);
+    // this.setState({
+    //   result: filterEmp,
+    // });
   };
 
+// Handle any changes made to searchEmp function
   handleInputChange = (event) => {
     event.preventDefault();
     console.log(event.target.value);
@@ -52,21 +79,7 @@ class Container extends Component {
     });
   };
 
-  // handleFormSubmit = (event) => {
-  //   event.preventDefault();
-  //   const value = event.target.value;
-  //   const name = event.target.name;
-  //   console.log(event.target);
-  //   console.log("name", name);
-  //   console.log("value", value);
-  //   this.searchEmp(value);
-  //   this.setState({
-  //     [name]: value
-  //   });
-  //   this.searchEmp(value);
-  //   this.searchEmp(this.state.search);
-  // };
-
+  // Renders data
   render() {
     return (
       <div className="container">
@@ -80,28 +93,38 @@ class Container extends Component {
             <Search
               value={this.state.search}
               handleInputChange={this.handleInputChange}
-              // handleFormSubmit={this.handleFormSubmit}
+              sortName={this.item}
             />
           </div>
         </div>
-
-        <div className="row">
-             
-            {[...this.state.result].map((item) => 
-            <Table 
-            picture={item.picture}
-            fName={item.fName}
-            lName={item.lName}
-            email={item.email}
-            phone={item.phone}
-            key={item.key}
-            />
-            )}
+        <table className="table table-hover">
+        <thead>
+            <tr>
+              <th>Employee Image</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+            </tr>
+            </thead>
+    </table>
        
-        </div>
+            {[...this.state.result].map((item) => (
+              <Table
+                picture={item.picture}
+                fName={item.fName}
+                lName={item.lName}
+                email={item.email}
+                phone={item.phone}
+                key={item.key}
+              />
+            ))}
+      
+       
       </div>
     );
   }
 }
 
+// Export container
 export default Container;
